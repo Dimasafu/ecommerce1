@@ -31,24 +31,33 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+{
     $request->validate([
         'name' => 'required',
+        'description' => 'required',
+        'stock' => 'required|integer',
         'price' => 'required|numeric',
         'category_id' => 'required|exists:categories,id',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png'
+        'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
     ]);
 
-    $data = $request->all();
+    // Upload gambar
+    $image = $request->file('image');
+    $filename = time() . '_' . $image->getClientOriginalName();
+    $image->move(public_path('images'), $filename);
 
-    if ($request->hasFile('image')) {
-        $data['image'] = $request->file('image')->store('products', 'public');
-    }
-
-    Product::create($data);
+    // Simpan produk
+    Product::create([
+        'name' => $request->name,
+        'description' => $request->description,
+        'stock' => $request->stock,
+        'price' => $request->price,
+        'category_id' => $request->category_id,
+        'image' => $filename,
+    ]);
 
     return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan');
-    }
+}
 
     /**
      * Display the specified resource.
@@ -74,17 +83,21 @@ class ProductController extends Controller
 {
     $request->validate([
         'name' => 'required',
+        'description' => 'required',
+        'stock' => 'required|integer',
         'price' => 'required|numeric',
         'category_id' => 'required|exists:categories,id',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png'
+        'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
     ]);
 
     $data = $request->all();
 
     if ($request->hasFile('image')) {
-        $data['image'] = $request->file('image')->store('products', 'public');
+        $image = $request->file('image');
+        $filename = time() . '_' . $image->getClientOriginalName();
+        $image->move(public_path('images'), $filename);
+        $data['image'] = $filename;
     }
-
     $product->update($data);
 
     return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui');

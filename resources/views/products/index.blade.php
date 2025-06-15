@@ -33,9 +33,9 @@
                 <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                 <td>
                     @if ($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" width="80">
+                    <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->name }}" width="80">
                     @else
-                        <span class="text-muted">Tidak ada gambar</span>
+                    <span class="text-muted">Tidak ada gambar</span>
                     @endif
                 </td>
                 <td>

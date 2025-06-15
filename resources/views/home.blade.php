@@ -39,7 +39,7 @@
         @foreach($products as $product)
         <div class="col-md-3 mb-4">
             <div class="card shadow-sm h-100">
-                <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
+                <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->name }}" width="80">
                 <div class="card-body">
                     <h5 class="card-title text-success">{{ $product->name }}</h5>
                     <p class="card-text text-muted">{{ Str::limit($product->description, 60) }}</p>

@@ -2,11 +2,17 @@
 
 @section('content')
 <div class="container py-4">
-    <h2 class="mb-4">Kategori Produk</h2>
-    <a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">Tambah Kategori</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Daftar Kategori Produk</h2>
+        <a href="{{ route('categories.create') }}" class="btn btn-success">+ Tambah Kategori</a>
+    </div>
 
-    <table class="table table-bordered">
-        <thead>
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
             <tr>
                 <th>ID</th>
                 <th>Nama Kategori</th>
@@ -15,20 +21,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($categories as $category)
+            @forelse ($categories as $category)
             <tr>
                 <td>{{ $category->id }}</td>
                 <td>{{ $category->name }}</td>
-                <td>{{ $category->products->count() }}</td>
+                <td>{{ $category->products_count }}</td>
                 <td>
-                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
-                        @csrf @method('DELETE')
-                        <button onclick="return confirm('Hapus kategori?')" class="btn btn-sm btn-danger">Hapus</button>
+                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin hapus kategori ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">Hapus</button>
                     </form>
                 </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+                <td colspan="4" class="text-center">Belum ada kategori</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

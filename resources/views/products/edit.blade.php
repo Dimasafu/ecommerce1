@@ -23,21 +23,21 @@
         </div>
 
         <div class="mb-3">
-            <label>Kategori</label>
-            <select name="category_id" class="form-control">
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}"
-                        {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label>Ganti Gambar</label>
-            <input type="file" name="image" class="form-control">
-        </div>
+    <label for="category_id">Kategori</label>
+    <select name="category_id" class="form-control" required>
+        <option value="">-- Pilih Kategori --</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}"
+                {{ (isset($product) && $product->category_id == $category->id) ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+<div class="mb-3">
+    <label for="gambar" class="form-label">Gambar Produk</label>
+    <input type="file" class="form-control" name="image" required>
+</div>
 
         <div class="mb-3">
     <label>Stok</label>
