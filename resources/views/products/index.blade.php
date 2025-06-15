@@ -1,24 +1,59 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold text-center text-green-700 mb-10">Produk Kami</h1>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        @forelse($products as $product)
-            <div class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition">
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover rounded-md mb-4">
-                <h2 class="text-lg font-semibold text-green-700">{{ $product->name }}</h2>
-                <p class="text-sm text-gray-600">{{ Str::limit($product->description, 80) }}</p>
-                <p class="text-green-800 font-bold mt-2">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-            </div>
-        @empty
-            <p class="col-span-4 text-center text-gray-500">Belum ada produk tersedia.</p>
-        @endforelse
+<div class="container py-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h2>List Produk</h2>
+        <a href="{{ route('products.create') }}" class="btn btn-success">+ Tambah Produk</a>
     </div>
 
-    <div class="mt-8">
-        {{ $products->links() }}
-    </div>
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nama</th>
+                <th>Deskripsi</th>
+                <th>Stok</th>
+                <th>Harga</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($products as $product)
+            <tr>
+                <td>{{ $product->id }}</td>
+                <td>{{ $product->name }}</td>
+                <td>{{ Str::limit($product->description, 50) }}</td>
+                <td>{{ $product->stock }}</td>
+                <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                <td>
+                    @if ($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" width="80">
+                    @else
+                        <span class="text-muted">Tidak ada gambar</span>
+                    @endif
+                </td>
+                <td>
+                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline"
+                        onsubmit="return confirm('Yakin ingin hapus produk ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="7" class="text-center">Belum ada produk</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection
